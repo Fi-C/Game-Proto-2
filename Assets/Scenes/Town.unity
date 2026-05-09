@@ -842,33 +842,37 @@ MonoBehaviour:
   - {fileID: 774803993}
   nodes:
   - text: Hello there!
-    choices: []
+    nodeType: 0
     nextNodeIndex: 1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: Are you here for the murder?
+    nodeType: 1
+    nextNodeIndex: 0
     choices:
     - text: Yes
       nextNodeIndex: 3
     - text: No
       nextNodeIndex: 2
-    nextNodeIndex: 0
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    requiredItem: {fileID: 11400000, guid: bc717cc31ccd9e640812d44c9a0afc9e, type: 2}
+    successNode: -1
+    failNode: -1
   - text: Farewell then!
-    choices: []
+    nodeType: 0
     nextNodeIndex: -1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: Go talk to Mrs Pink, she might know what's up!
-    choices: []
+    nodeType: 0
     nextNodeIndex: -1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   inventory: {fileID: 0}
 --- !u!135 &911759450
 SphereCollider:
@@ -1992,39 +1996,44 @@ MonoBehaviour:
   - {fileID: 774803993}
   nodes:
   - text: Oh thank goodness you're here! Please! My husband has been murdered!
-    choices: []
+    nodeType: 0
     nextNodeIndex: 1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: There anything you need?
+    nodeType: 0
+    nextNodeIndex: 0
     choices:
     - text: Where was he murdered?
       nextNodeIndex: 2
     - text: How are you doing?
       nextNodeIndex: 3
-    nextNodeIndex: 0
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: He was murderd on the toilet while shitting prefusely!
-    choices: []
+    nodeType: 0
     nextNodeIndex: -1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: My husband is fucking dead.
-    choices: []
+    nodeType: 0
     nextNodeIndex: -1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   - text: Go talk to Mrs Pink, she might know what's up!
-    choices: []
+    nodeType: 0
     nextNodeIndex: -1
-    correctItem: {fileID: 0}
-    CorrectItemNode: -1
-    WrongItemNode: -1
+    choices: []
+    requiredItem: {fileID: 0}
+    successNode: -1
+    failNode: -1
   inventory: {fileID: 0}
 --- !u!135 &1974917890
 SphereCollider:

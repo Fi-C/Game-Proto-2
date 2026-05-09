@@ -45,9 +45,18 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        Vector3 targetVelocity = new Vector3(input.x, 0, input.y) * maxSpeed;
+        Vector3 moveDirection =
+            transform.forward * input.y +
+            transform.right * input.x; 
+
+        moveDirection.Normalize();
+
+        Vector3 targetVelocity = moveDirection * maxSpeed;
+
         Vector3 velocity = rb.linearVelocity;
+
         Vector3 velocityChange = targetVelocity - new Vector3(velocity.x, 0, velocity.z);
+
         velocityChange = Vector3.ClampMagnitude(velocityChange, accel * Time.fixedDeltaTime);
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
 

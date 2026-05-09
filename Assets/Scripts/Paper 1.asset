@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f2bc43d47beec4e8c00b763f53ad24, type: 3}
   m_Name: Paper 1
   m_EditorClassIdentifier: 
-  itemName: Paper
+  itemName: Paper 2
   description: Paper
   icon: {fileID: 0}

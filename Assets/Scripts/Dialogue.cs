@@ -43,9 +43,9 @@ public class Dialogue : MonoBehaviour
     [Header("Input")]
     [SerializeField] private PlayerInput playerInput;
 
-    private InputAction talkAction;
-    private InputAction moveAction;
-    private InputAction exitAction;
+    private InputAction TalkAction;
+    private InputAction MoveAction;
+    private InputAction ExitAction;
 
     private bool inputHeld = false;
 
@@ -68,9 +68,9 @@ public class Dialogue : MonoBehaviour
 
     private void Awake()
     {
-        talkAction = playerInput.actions.FindAction("Interact");
-        moveAction = playerInput.actions.FindAction("Move");
-        exitAction = playerInput.actions.FindAction("Exit");
+        TalkAction = playerInput.actions.FindAction("Interact");
+        MoveAction = playerInput.actions.FindAction("Move");
+        ExitAction = playerInput.actions.FindAction("Exit");
 
         dialogueBox.SetActive(false);
         HideChoices();
@@ -98,13 +98,13 @@ public class Dialogue : MonoBehaviour
         if (!playerDetection)
             return;
 
-        if (!isTalking && talkAction.WasPressedThisFrame())
+        if (!isTalking && TalkAction.WasPressedThisFrame())
         {
             StartDialogue();
             return;
         }
 
-        if (isTalking && exitAction.WasPressedThisFrame())
+        if (isTalking && ExitAction.WasPressedThisFrame())
         {
             EndDialogue();
             return;
@@ -113,7 +113,7 @@ public class Dialogue : MonoBehaviour
         if (!isTalking)
             return;
 
-        Vector2 input = moveAction.ReadValue<Vector2>();
+        Vector2 input = MoveAction.ReadValue<Vector2>();
 
         if (choosing)
         {
@@ -121,7 +121,7 @@ public class Dialogue : MonoBehaviour
         }
         else
         {
-            if (talkAction.WasPressedThisFrame())
+            if (TalkAction.WasPressedThisFrame())
             {
                 NextNode();
             }
@@ -145,7 +145,7 @@ public class Dialogue : MonoBehaviour
             inputHeld = false;
         }
 
-        if (talkAction.WasPressedThisFrame())
+        if (TalkAction.WasPressedThisFrame())
         {
             SelectChoice();
         }
@@ -178,30 +178,24 @@ public class Dialogue : MonoBehaviour
                 break;
 
             case DialogueNodeType.Choice:
+                dialogueText.text = node.text;
                 choosing = true;
                 currentChoice = 0;
                 ShowChoices(node.choices);
                 break;
 
             case DialogueNodeType.ItemChoice:
-                choosing = true;
-                currentChoice = 0;
+                bool hasItem = 
+                    inventory.HasItem(node.requiredItem);
 
-                DialogueChoice[] itemChoices = new DialogueChoice[2];
-
-                itemChoices[0] = new DialogueChoice
+                currentNode =
+                    (hasItem ? node.successNode : node.failNode);
+                if (currentNode < 0)
                 {
-                    text = "Present Item",
-                    nextNodeIndex = -1
-                };
-
-                itemChoices[1] = new DialogueChoice
-                {
-                    text = "Leave",
-                    nextNodeIndex = node.failNode
-                };
-
-                ShowChoices(itemChoices);
+                    EndDialogue();
+                    return;
+                }
+                ShowNode(); 
                 break;
         }
     }
@@ -252,115 +246,28 @@ public class Dialogue : MonoBehaviour
     {
         DialogueNode node = nodes[currentNode];
 
-        int count = 0;
+        int count = node.choices.Length;
 
-        switch (node.nodeType)
-        {
-            case DialogueNodeType.Choice:
-                count = node.choices.Length;
-                break;
-
-            case DialogueNodeType.ItemChoice:
-                count = 2;
-                break;
-        }
-
-        currentChoice =
-            (currentChoice + direction + count) % count;
-
-        if (node.nodeType == DialogueNodeType.Choice)
-        {
-            ShowChoices(node.choices);
-        }
-        else
-        {
-            DialogueChoice[] itemChoices = new DialogueChoice[2];
-
-            itemChoices[0] = new DialogueChoice
-            {
-                text = "Present Item"
-            };
-
-            itemChoices[1] = new DialogueChoice
-            {
-                text = "Leave"
-            };
-
-            ShowChoices(itemChoices);
-        }
+            currentChoice = (currentChoice + direction + count) % count;
+        ShowChoices(node.choices);
     }
 
     void SelectChoice()
     {
         DialogueNode node = nodes[currentNode];
 
-        switch (node.nodeType)
-        {
-            case DialogueNodeType.Choice:
+        int next = node.choices[currentChoice].nextNodeIndex;
 
-                int next =
-                    node.choices[currentChoice].nextNodeIndex;
-
-                if (next < 0)
-                {
-                    EndDialogue();
-                    return;
-                }
-
-                currentNode = next;
-                ShowNode();
-
-                break;
-
-            case DialogueNodeType.ItemChoice:
-
-                if (currentChoice == 0)
-                {
-                    PresentItem();
-                }
-                else
-                {
-                    if (node.failNode < 0)
-                    {
-                        EndDialogue();
-                        return;
-                    }
-
-                    currentNode = node.failNode;
-                    ShowNode();
-                }
-
-                break;
-        }
-    }
-
-    void PresentItem()
-    {
-        DialogueNode node = nodes[currentNode];
-
-        if (inventory.selectedItem == null)
-        {
-            currentNode = node.failNode;
-            ShowNode();
-            return;
-        }
-
-        bool correct =
-            inventory.selectedItem == node.requiredItem;
-
-        currentNode =
-            correct
-            ? node.successNode
-            : node.failNode;
-
-        if (currentNode < 0)
+        if (next < 0)
         {
             EndDialogue();
             return;
         }
 
+        currentNode = next;
         ShowNode();
     }
+
 
     void EndDialogue()
     {

@@ -14,4 +14,9 @@ public class Inventory : MonoBehaviour
         Debug.Log(item.itemName + " added!");
         inventoryUi.RefreshUI();
     }
+
+    public bool HasItem(ItemData item)
+    {
+        return ItemList.Contains(item); 
+    }
 }

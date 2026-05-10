@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3f2bc43d47beec4e8c00b763f53ad24, type: 3}
-  m_Name: Paper 1
+  m_Name: Purse
   m_EditorClassIdentifier: 
-  itemName: Paper 2
-  description: Paper
+  itemName: Purse
+  description: 
   icon: {fileID: 0}

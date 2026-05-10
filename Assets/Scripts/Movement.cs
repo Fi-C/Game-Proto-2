@@ -3,9 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private InputAction m_moveAction;
-    private InputAction m_jumpAction;
-    private InputAction m_talkAction;
+    private InputAction MoveAction;
+    private InputAction TalkAction;
 
     private Vector2 input;
     private Rigidbody rb;
@@ -13,15 +12,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float maxSpeed = 14f;
     [SerializeField] private float accel = 80f;
-    [SerializeField] private float jumpForce = 7f;
+    [SerializeField] private Transform cameraTransform;
 
     static public bool dialogue = false;
 
     private void Awake()
     {
-        m_moveAction = InputSystem.actions.FindAction("Move");
-        m_jumpAction = InputSystem.actions.FindAction("Jump");
-        m_talkAction = InputSystem.actions.FindAction("Interact");
+        MoveAction = InputSystem.actions.FindAction("Move");
+        TalkAction = InputSystem.actions.FindAction("Interact");
 
         rb = GetComponent<Rigidbody>();
     }
@@ -34,35 +32,45 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         else
-            input = m_moveAction.ReadValue<Vector2>();
+            input = MoveAction.ReadValue<Vector2>();
     }
 
     private void FixedUpdate()
     {
         if (dialogue)
         {
-            rb.linearVelocity = Vector3.zero; // fully freeze movement
+            rb.linearVelocity = Vector3.zero;
             return;
         }
 
-        Vector3 moveDirection =
-            transform.forward * input.y +
-            transform.right * input.x; 
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+        forward.y = 0f;
+        right.y = 0f;
 
-        moveDirection.Normalize();
+        forward.Normalize();
+        right.Normalize();
+
+        Vector3 moveDirection =
+            forward * input.y +
+            right * input.x;  
 
         Vector3 targetVelocity = moveDirection * maxSpeed;
 
         Vector3 velocity = rb.linearVelocity;
 
-        Vector3 velocityChange = targetVelocity - new Vector3(velocity.x, 0, velocity.z);
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
 
-        velocityChange = Vector3.ClampMagnitude(velocityChange, accel * Time.fixedDeltaTime);
-        rb.AddForce(velocityChange, ForceMode.VelocityChange);
+        Vector3 velocityChange = targetVelocity - horizontalVelocity;
 
-        if (m_jumpAction.WasPressedThisFrame())
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
+        velocityChange = Vector3.ClampMagnitude(
+            velocityChange,
+            accel * Time.fixedDeltaTime
+        );
+
+        rb.AddForce(
+            new Vector3(velocityChange.x, 0f, velocityChange.z),
+            ForceMode.VelocityChange
+        );
     }
 }
